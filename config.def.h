@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -13,23 +13,29 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int extrabar           = 1;        /* 0 means no extra bar */
 static const char statussep         = ';';      /* separator between statuses */
 static const char dmenufont[]       = "monospace:size=12";
-static const char *fonts[]          = { "SourceHanMono:size=10",
-		"Iosevka Nerd Font:size=15:antialias=true:autohint=true",};
+static const char *fonts[]          = { "SourceHanMono:size=11",
+		"Iosevka Nerd Font:size=11:antialias=true:autohint=true"};
 static const int statusfontindex = 2; //Select font of font list to use for statusbar
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char *colors[][3]      = {
+static const char *colors[][4]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_gray2,  col_cyan  },
-	[SchemeStatus]  = { col_gray3, col_gray1,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
-	[SchemeTagsSel]  = { col_gray4, col_gray2,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
-    [SchemeTagsNorm]  = { col_gray3, col_gray1,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
-    [SchemeInfoSel]  = { col_gray4, col_gray2,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
-    [SchemeInfoNorm]  = { col_gray3, col_gray1,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, col_gray2 },
+	[SchemeSel] =  { col_gray4, col_cyan,  col_gray2, col_cyan },
+	[SchemeStatus]  = { col_gray3, col_gray1,  "#000000",col_gray4  }, // Statusbar right {text,background,not used but cannot be empty}
+	[SchemeTagsSel]  = { col_gray4, col_gray2,  "#000000",col_gray4  }, // Tagbar left selected {text,background,not used but cannot be empty}
+    [SchemeTagsNorm]  = { col_gray3, col_gray1,  "#000000",col_gray4  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+    [SchemeInfoSel]  = { col_gray4, col_gray2,  "#000000",col_gray4  }, // infobar middle  selected {text,background,not used but cannot be empty}
+    [SchemeInfoNorm]  = { col_gray3, col_gray1,  "#000000",col_gray4  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+};
+
+static const char *const autostart[] = {
+	"hsetroot","-fill","/home/hungz/Downloads/FOYd_jZakAYIcOT.jpg",NULL,
+	"statusbar.sh",NULL,
+	NULL /* terminate */
 };
 
 /* tagging */
@@ -42,16 +48,17 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            0,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* { "Gimp",     NULL,       NULL,       0,            1,           -1 }, */
+	/* { "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 }, */
+	{"st-256color",	 NULL,	   NULL,	0,	0,	-1},
 };
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-static const int CORNER_RADIUS = 20;
+static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
+static const int CORNER_RADIUS = 7;
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "patches/vanitygaps.c"
@@ -84,15 +91,17 @@ static const Layout layouts[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
+
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", cmd, NULL } }
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run",NULL };
 static const char *shutdowncmd[] = { "sudo","shutdown", "-h", "now", NULL };
+static const char *rebootcmd[] = {"sudo","shutdown","-r","+0",NULL};
 static const char *killwm[] = { "killall", "xinit", NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "st","-t","Terminal", NULL };
 static const char *flameshot[] = {"flameshot","gui",NULL};
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -130,7 +139,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	{ MODKEY,	                XK_s,      togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
@@ -148,7 +157,8 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 	{ ALT|ShiftMask,                XK_r,      quit,           {0} },
 	{ ALT|ShiftMask,                XK_q,      spawn,	  {.v = killwm } },
-	{ ALT|ShiftMask,                XK_Escape,      spawn,          {.v = shutdowncmd } },
+	{ ALT|ShiftMask,                XK_Escape, spawn,          {.v = shutdowncmd } },
+	{ ALT|ShiftMask,                XK_Delete, spawn,          {.v = rebootcmd } },
 };
 
 /* button definitions */
