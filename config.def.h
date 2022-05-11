@@ -10,6 +10,8 @@ static const unsigned int gappov    = 10;       /* vert outer gap between window
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+#define ICONSIZE 16   /* icon size */
+#define ICONSPACING 5 /* space between icon and title */
 static const int extrabar           = 1;        /* 0 means no extra bar */
 static const char statussep         = ';';      /* separator between statuses */
 static const char dmenufont[]       = "monospace:size=12";
@@ -33,7 +35,7 @@ static const char *colors[][4]      = {
 };
 
 static const char *const autostart[] = {
-	"hsetroot","-fill","/home/hungz/Downloads/FOYd_jZakAYIcOT.jpg",NULL,
+	"hsetroot","-fill","/path/to/file",NULL, 
 	"statusbar.sh",NULL,
 	NULL /* terminate */
 };
