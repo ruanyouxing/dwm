@@ -14,9 +14,9 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 #define ICONSPACING 5 /* space between icon and title */
 static const int extrabar           = 1;        /* 0 means no extra bar */
 static const char statussep         = ';';      /* separator between statuses */
-static const char dmenufont[]       = "monospace:size=12";
-static const char *fonts[]          = { "SourceHanMono:size=11",
-		"Iosevka Nerd Font:size=11:antialias=true:autohint=true"};
+static const char dmenufont[]       = "Iosevka Nerd Font:style=Regular:size=12";
+static const char *fonts[]          = { "SourceHanCodeJP:style=Regular:size=11",
+		"Iosevka Nerd Font:size=13:style=Regular:antialias=true:autohint=true"};
 static const int statusfontindex = 2; //Select font of font list to use for statusbar
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -36,6 +36,8 @@ static const char *colors[][4]      = {
 
 static const char *const autostart[] = {
 	"hsetroot","-fill","/path/to/file",NULL, 
+	"wallset -V ~/Downloads/bupKz-MRkoROlDUU.mp4",NULL,
+	"xcompmgr",NULL,
 	"statusbar.sh",NULL,
 	NULL /* terminate */
 };
